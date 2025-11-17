@@ -29,7 +29,7 @@ public class CartItemService implements ICartItemService {
     public CartItemDTO addNewCartItem(UpdateCartItemRequest request) {
         if (!productRepository.existsById(request.getProductId()))
             throw new EntityNotFoundException("Product with ID " + request.getProductId() + " not found");
-        Cart cart = cartService.findCartEntityByClientId(request.getCartId());
+        Cart cart = cartService.findCartEntityById(request.getCartId());
         CartItem cartItem = cartItemMapper.toCartItemFromUpdateCartItemRequest(request);
         cartItem.setCart(cart);
         cartItemRepository.save(cartItem);
@@ -40,7 +40,7 @@ public class CartItemService implements ICartItemService {
 
     @Override
     public CartItemDTO updateCartItem(UpdateCartItemRequest request) {
-        Cart cart = cartService.findCartEntityByClientId(request.getCartId());
+        Cart cart = cartService.findCartEntityById(request.getCartId());
         if (request.getQuantity() == 0) {
             deleteCartItem(request.getProductId(), request.getCartId());
             return null;
@@ -60,7 +60,7 @@ public class CartItemService implements ICartItemService {
 
     @Override
     public CartItemDTO getCartItemByProductId(Long productId, Long cartId) {
-        Cart cart = cartService.findCartEntityByClientId(cartId);
+        Cart cart = cartService.findCartEntityById(cartId);
         for (CartItem cartItem1 : cart.getItems()) {
             if (cartItem1.getProductId().equals(productId)) {
                 return cartItemMapper.toCartItemDTO(cartItem1);
@@ -71,7 +71,7 @@ public class CartItemService implements ICartItemService {
 
     @Override
     public List<CartItemDTO> getAllCartItems(Long cartId) {
-        Cart cart = cartService.findCartEntityByClientId(cartId);
+        Cart cart = cartService.findCartEntityById(cartId);
         List<CartItem> cartItems = cart.getItems();
         List<CartItemDTO> cartItemDTOs = new ArrayList<>();
         for (CartItem cartItem1 : cartItems) {
@@ -82,7 +82,7 @@ public class CartItemService implements ICartItemService {
 
     @Override
     public void deleteCartItem(Long productId, Long cartId) {
-        Cart cart = cartService.findCartEntityByClientId(cartId);
+        Cart cart = cartService.findCartEntityById(cartId);
         for (CartItem cartItem1 : cart.getItems()) {
             if (cartItem1.getProductId().equals(productId)) {
                 cart.getItems().remove(cartItem1);

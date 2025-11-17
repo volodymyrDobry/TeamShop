@@ -13,5 +13,5 @@ public class ClientDTO {
     private String password;
     private String email;
     private Long cartId;
-    private int orderId;
+    private Integer orderId;
 }

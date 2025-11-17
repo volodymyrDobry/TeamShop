@@ -8,8 +8,8 @@ import lombok.*;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "shop_client")
-
+@Table(name = "shop_client",
+        uniqueConstraints = @UniqueConstraint(columnNames = {"orderId"}))
 public class Client {
 
     @Id
@@ -24,7 +24,7 @@ public class Client {
     @Column(unique = true)
     private Long cartId;
 
-    @Column(unique = true)
-    private int orderId;
+    @Column(nullable = true)
+    private Integer orderId;
 
 }

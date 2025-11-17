@@ -14,8 +14,12 @@ public class CartService implements ICartService {
     private final CartRepository cartRepository;
     private final CartMapper cartMapper;
 
+
     @Override
     public Long createNewCart(Long clientId) {
+        if (clientId == null)
+            throw new IllegalArgumentException("Client Id cannot be null");
+
         Cart cart = new Cart();
         cart.setClientId(clientId);
         cartRepository.save(cart);
@@ -23,21 +27,24 @@ public class CartService implements ICartService {
     }
 
     @Override
-    public CartDTO findCartById(Long id) {
-        Cart cart = findCartEntityByClientId(id);
+    public CartDTO findCartDTOById(Long id) {
+        Cart cart = findCartEntityById(id);
         return cartMapper.toCartDTO(cart);
     }
 
     @Override
-    public Cart findCartEntityByClientId(Long clientId) {
+    public Cart findCartEntityById(Long cartId) {
+        if (cartId == null)
+            throw new IllegalArgumentException("Cart Id cannot be null");
+
         return cartRepository
-                .findById(clientId)
+                .findById(cartId)
                 .orElseThrow(() -> new EntityNotFoundException("Cart not found"));
     }
 
     @Override
     public void deleteCart(Long id) {
-        Cart cart = findCartEntityByClientId(id);
+        Cart cart = findCartEntityById(id);
         cartRepository.delete(cart);
     }
 }

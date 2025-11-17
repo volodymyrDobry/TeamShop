@@ -6,7 +6,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.example.teamshop.Exception.ResourceNotFoundException;
+import org.example.teamshop.Exception.AlreadyExistingResourceException;
+import org.example.teamshop.Exception.FailedOperationException;
 import org.example.teamshop.dto.ClientDTO;
 import org.example.teamshop.request.CreateClientRequest;
 import org.example.teamshop.request.LoginRequest;
@@ -60,19 +61,17 @@ public class AuthController {
         try {
             ClientDTO clientDTO = clientService.addClient(createClientRequest);
             return ResponseEntity.ok(clientDTO);
-        } catch (ResourceNotFoundException e) {
+        } catch (FailedOperationException e) {
             System.out.println(e.getMessage());
-            if (e.getMessage().equals("A client with this email already exists")) {
-                return ResponseEntity.status(HttpStatus.CONFLICT).build();
-            } else if (e.getMessage().equals("Conflict! Bad request")) {
-                return ResponseEntity.badRequest().build();
-            }
             return ResponseEntity.badRequest().build();
+        } catch (AlreadyExistingResourceException e) {
+            System.out.println(e.getMessage());
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
         } catch (Exception e) {
             System.out.println(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
-     // should be created admin registration
+    // should be created admin registration
 }
